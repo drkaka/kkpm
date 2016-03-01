@@ -4,4 +4,4 @@ go:
 install:
   - go get github.com/jackc/pgx
 script:
-  - go test -race -v
+  - go test ./...
