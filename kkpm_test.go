@@ -1,7 +1,48 @@
 package kkpm
 
-import "testing"
+import (
+	"net"
+	"os"
+	"testing"
+	"time"
+
+	"github.com/jackc/pgx"
+)
+
+func prepare(t *testing.T) {
+	prepareDB()
+
+	var dbname pgx.NullString
+	if err := dbPool.QueryRow("SELECT 'public.private_msg'::regclass;").Scan(&dbname); err != nil {
+		t.Fatal(err)
+	}
+
+	if dbname.String != "private_msg" {
+		t.Fatal("dbname is not correct.")
+	}
+}
 
 func TestMain(t *testing.T) {
-	t.Logf("OK:%s", OK)
+	DBName := os.Getenv("dbname")
+	DBHost := os.Getenv("dbhost")
+	DBUser := os.Getenv("dbuser")
+	DBPassword := os.Getenv("dbpassword")
+
+	connPoolConfig := pgx.ConnPoolConfig{
+		ConnConfig: pgx.ConnConfig{
+			Host:     DBHost,
+			User:     DBUser,
+			Password: DBPassword,
+			Database: DBName,
+			Dial:     (&net.Dialer{KeepAlive: 5 * time.Minute, Timeout: 5 * time.Second}).Dial,
+		},
+		MaxConnections: 10,
+	}
+
+	var err error
+	if dbPool, err = pgx.NewConnPool(connPoolConfig); err != nil {
+		t.Fatal(err)
+	}
+
+	prepare(t)
 }

@@ -14,7 +14,7 @@ branches:
     
 env:
   global:
-  - dbname=travis-db-test
+  - dbname=test
   - dbhost=localhost
   - dbuser=postgres
   
@@ -33,18 +33,16 @@ before_install:
   - sudo sh -c 'echo -n "host all all 127.0.0.1/32 trust" >> /etc/postgresql/9.5/main/pg_hba.conf'
   - sudo /etc/init.d/postgresql restart
   - psql --version
+  - pip install codecov
   
 install:
   - go get -t ./...
-  - go get golang.org/x/tools/cmd/cover
-  - go get github.com/mattn/goveralls
-  - go test -v -covermode=count -coverprofile=coverage.out
   
 before_script:
-  - psql -U postgres -c 'create database "travis-db-test";'
+  - psql -U postgres -c 'create database "test";'
   
 script:
-  - go test -race -v -covermode=count -coverprofile=coverage.out ./...
-  
+  - go test -race -v ./...
+
 after_success:
-  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken xxlB5Zsre0fPwgpgai6DnpKFkNHlYis2L
+  - codecov
