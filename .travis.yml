@@ -42,7 +42,7 @@ before_script:
   - psql -U postgres -c 'create database "test";'
   
 script:
-  - ./go.test.sh
+  - sudo ./go.test.sh
   
 after_success:
   - bash <(curl -s https://codecov.io/bash)
