@@ -1,15 +1,15 @@
 package kkpm
 
-import "github.com/jackc/pgx"
-
-// dbPool the pgx database pool.
-var dbPool *pgx.ConnPool
-
 // MessageInfo for private message.
 type MessageInfo struct {
-	MessageID string `json:"messageid" binding:"required"`
-	Message   string `json:"message" binding:"required"`
-	FromUser  int    `json:"fromuser" binding:"required"`
-	ToUser    int    `json:"touser" binding:"required"`
-	At        int    `json:"at" binding:"required"`
+	MessageID string `json:"messageid"`
+	Message   string `json:"message"`
+	FromUser  int    `json:"fromuser,omitempty"`
+	ToUser    int    `json:"touser,omitempty"`
+	At        int    `json:"at"`
+}
+
+// SendMessage to send a message.
+func SendMessage(from, to int, message string) {
+
 }

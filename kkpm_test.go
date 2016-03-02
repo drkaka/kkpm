@@ -9,19 +9,6 @@ import (
 	"github.com/jackc/pgx"
 )
 
-func prepare(t *testing.T) {
-	prepareDB()
-
-	var dbname pgx.NullString
-	if err := dbPool.QueryRow("SELECT 'public.private_msg'::regclass;").Scan(&dbname); err != nil {
-		t.Fatal(err)
-	}
-
-	if dbname.String != "private_msg" {
-		t.Fatal("dbname is not correct.")
-	}
-}
-
 func TestMain(t *testing.T) {
 	DBName := os.Getenv("dbname")
 	DBHost := os.Getenv("dbhost")
@@ -45,4 +32,9 @@ func TestMain(t *testing.T) {
 	}
 
 	prepare(t)
+	insertSomeMessages(t)
+
+	testGetMessageFrom(t)
+
+	truncate(t)
 }
