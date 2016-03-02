@@ -3,8 +3,15 @@ sudo: required
 language: go
 
 go:
+  - 1.4
+  - 1.5
   - 1.6
+  - tip
   
+branches:
+  only:
+    - master
+    
 env:
   global:
   - dbname=travis-db-test
@@ -28,10 +35,16 @@ before_install:
   - psql --version
   
 install:
-  - go get github.com/jackc/pgx
+  - go get -t ./...
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/mattn/goveralls
+  - go test -v -covermode=count -coverprofile=coverage.out
   
 before_script:
   - psql -U postgres -c 'create database "travis-db-test";'
   
 script:
-  - go test -v ./...
+  - go test -race -v ./...
+  
+after_success:
+  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken xxlB5Zsre0fPwgpgai6DnpKFkNHlYis2L
