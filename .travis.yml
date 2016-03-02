@@ -44,7 +44,7 @@ before_script:
   - psql -U postgres -c 'create database "travis-db-test";'
   
 script:
-  - go test -race -v ./...
+  - go test -race -v -covermode=count -coverprofile=coverage.out ./...
   
 after_success:
   - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken xxlB5Zsre0fPwgpgai6DnpKFkNHlYis2L
