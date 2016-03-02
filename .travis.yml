@@ -37,12 +37,13 @@ before_install:
   
 install:
   - go get -t ./...
+  - go get golang.org/x/tools/cmd/cover
   
 before_script:
   - psql -U postgres -c 'create database "test";'
   
 script:
   - go test -race -v ./...
-
+  
 after_success:
-  - codecov
+  - bash <(curl -s https://codecov.io/bash)
