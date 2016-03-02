@@ -33,7 +33,6 @@ before_install:
   - sudo sh -c 'echo -n "host all all 127.0.0.1/32 trust" >> /etc/postgresql/9.5/main/pg_hba.conf'
   - sudo /etc/init.d/postgresql restart
   - psql --version
-  - pip install codecov
   
 install:
   - go get -t ./...
