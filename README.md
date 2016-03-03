@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS private_msg (
 );
 CREATE INDEX IF NOT EXISTS index_private_msg_to_userid ON private_msg (to_userid);
 CREATE INDEX IF NOT EXISTS index_private_msg_from_userid ON private_msg (from_userid);
+CREATE INDEX IF NOT EXISTS index_private_msg_at ON private_msg (at);
 ```
 
 ## Dependence
@@ -35,19 +36,19 @@ err := kkpm.Use(pool)
 
 ####Get the messages sent:
 ```Go
-result, err := GetSentMessages(3, 0);
+result, err := kkpm.GetSentMessages(3, 0);
 ```
 The second parameter is unixtime, the messages sent later than that will be got.
 
 ####Get the messages received:
 ```Go
-result, err := GetReveivedMessages(3, 0);
+result, err := kkpm.GetReveivedMessages(3, 0);
 ```
 The second parameter is unixtime, the messages received later than that will be got.
 
 ####Get the messages between two people:
 ```Go
-result, err := GetPeerChat(3, 2, 0);
+result, err := kkpm.GetPeerChat(3, 2, 0);
 ```
 The third parameter is unixtime, the messages later than that will be got.
 
