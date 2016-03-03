@@ -9,9 +9,7 @@ import (
 
 var messages []MessageInfo
 
-func prepare(t *testing.T) {
-	prepareDB()
-
+func testTableGeneration(t *testing.T) {
 	var dbname pgx.NullString
 	if err := dbPool.QueryRow("SELECT 'public.private_msg'::regclass;").Scan(&dbname); err != nil {
 		t.Fatal(err)

@@ -17,3 +17,17 @@ CREATE TABLE IF NOT EXISTS private_msg (
 CREATE INDEX IF NOT EXISTS index_private_msg_to_userid ON private_msg (to_userid);
 CREATE INDEX IF NOT EXISTS index_private_msg_from_userid ON private_msg (from_userid);
 ```
+
+## Dependence
+
+```Go
+go get github.com/jackc/pgx
+go get github.com/satori/go.uuid
+```
+
+## Usage 
+
+First need to use the module with the pgx pool passed in:
+```Go
+err := kkpm.Use(pool)
+```

@@ -9,6 +9,24 @@ import (
 	"github.com/jackc/pgx"
 )
 
+func testInsert(t *testing.T) {
+	if err := InsertMessage(0, 1, "abc"); err == nil {
+		t.Error("Should have error that from id is 0.")
+	}
+
+	if err := InsertMessage(1, 0, "abc"); err == nil {
+		t.Error("Should have error that to id is 0.")
+	}
+
+	if err := InsertMessage(1, 1, "abc"); err == nil {
+		t.Error("Should have error that to ids are the same.")
+	}
+
+	if err := InsertMessage(1, 2, ""); err == nil {
+		t.Error("Should have error that message is empty.")
+	}
+}
+
 func TestMain(t *testing.T) {
 	DBName := os.Getenv("dbname")
 	DBHost := os.Getenv("dbhost")
@@ -27,11 +45,18 @@ func TestMain(t *testing.T) {
 	}
 
 	var err error
-	if dbPool, err = pgx.NewConnPool(connPoolConfig); err != nil {
+	var pool *pgx.ConnPool
+	if pool, err = pgx.NewConnPool(connPoolConfig); err != nil {
 		t.Fatal(err)
 	}
 
-	prepare(t)
+	if err = Use(pool); err != nil {
+		t.Fatal(err)
+	}
+	testTableGeneration(t)
+
+	// test the db methods.
+	// insert some data.
 	insertSomeMessages(t)
 
 	testGetMessageFrom(t)
@@ -39,4 +64,7 @@ func TestMain(t *testing.T) {
 	testGetMessageFromTo(t)
 
 	truncate(t)
+
+	// test the public methods
+	testInsert(t)
 }
