@@ -4,12 +4,12 @@ package kkpm
 type MessageInfo struct {
 	MessageID string `json:"messageid"`
 	Message   string `json:"message"`
-	FromUser  int    `json:"fromuser,omitempty"`
-	ToUser    int    `json:"touser,omitempty"`
-	At        int    `json:"at"`
+	FromUser  int32  `json:"fromuser,omitempty"`
+	ToUser    int32  `json:"touser,omitempty"`
+	At        int32  `json:"at"`
 }
 
 // SendMessage to send a message.
-func SendMessage(from, to int, message string) {
+func SendMessage(from, to int32, message string) {
 
 }

@@ -35,6 +35,8 @@ func TestMain(t *testing.T) {
 	insertSomeMessages(t)
 
 	testGetMessageFrom(t)
+	testGetMessageTo(t)
+	testGetMessageFromTo(t)
 
 	truncate(t)
 }

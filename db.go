@@ -31,19 +31,17 @@ func insertMessage(info *MessageInfo) error {
 }
 
 // getMessagesFromUser to get the messages sent by the user with fromid.
-func getMessagesFrom(fromid int) ([]MessageInfo, error) {
+func getMessagesFrom(fromid int32) ([]MessageInfo, error) {
 	rows, _ := dbPool.Query("select id,to_userid,message,at from private_msg where from_userid=$1", fromid)
 
 	var result []MessageInfo
 	for rows.Next() {
 		var one MessageInfo
-		var toid, at int32
-		err := rows.Scan(&(one.MessageID), &toid, &(one.Message), &at)
-		one.ToUser = int(toid)
-		one.At = int(at)
+		err := rows.Scan(&(one.MessageID), &(one.ToUser), &(one.Message), &(one.At))
 		if err != nil {
 			return result, err
 		}
+		one.FromUser = fromid
 		result = append(result, one)
 	}
 
@@ -51,16 +49,35 @@ func getMessagesFrom(fromid int) ([]MessageInfo, error) {
 }
 
 // getMessagesToUser to get the messages received by the user with toid.
-func getMessagesTo(toid int) ([]MessageInfo, error) {
+func getMessagesTo(toid int32) ([]MessageInfo, error) {
 	rows, _ := dbPool.Query("select id,from_userid,message,at from private_msg where to_userid=$1", toid)
 
 	var result []MessageInfo
 	for rows.Next() {
 		var one MessageInfo
-		err := rows.Scan(&(one.MessageID), one.FromUser, &(one.Message), one.At)
+		err := rows.Scan(&(one.MessageID), &(one.FromUser), &(one.Message), &(one.At))
 		if err != nil {
 			return result, err
 		}
+		one.ToUser = toid
+		result = append(result, one)
+	}
+
+	return result, rows.Err()
+}
+
+func getMessagesFromTo(fromid, toid int32) ([]MessageInfo, error) {
+	rows, _ := dbPool.Query("select id,message,at from private_msg where to_userid=$1 and from_userid=$2", toid, fromid)
+
+	var result []MessageInfo
+	for rows.Next() {
+		var one MessageInfo
+		err := rows.Scan(&(one.MessageID), &(one.Message), &(one.At))
+		if err != nil {
+			return result, err
+		}
+		one.FromUser = fromid
+		one.ToUser = toid
 		result = append(result, one)
 	}
 
