@@ -4,7 +4,8 @@
 
 The private message module for golang project. (***IMPORTANT:*** The API and data structure may change!)
 
-Current database created by:
+## Database
+It is using PostgreSQL as the database and will create a table:
 
 ```sql  
 CREATE TABLE IF NOT EXISTS private_msg (
@@ -27,7 +28,31 @@ go get github.com/satori/go.uuid
 
 ## Usage 
 
-First need to use the module with the pgx pool passed in:
+####First need to use the module with the pgx pool passed in:
 ```Go
 err := kkpm.Use(pool)
 ```
+
+####Get the messages sent:
+```Go
+result, err := GetSentMessages(3, 0);
+```
+The second parameter is unixtime, the messages sent later than that will be got.
+
+####Get the messages received:
+```Go
+result, err := GetReveivedMessages(3, 0);
+```
+The second parameter is unixtime, the messages received later than that will be got.
+
+####Get the messages between two people:
+```Go
+result, err := GetPeerChat(3, 2, 0);
+```
+The third parameter is unixtime, the messages later than that will be got.
+
+## TODO
+
+#### Delete
+
+#### Manage

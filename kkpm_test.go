@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx"
 )
 
-func testInsert(t *testing.T) {
+func TestInvalidInsert(t *testing.T) {
 	if err := InsertMessage(0, 1, "abc"); err == nil {
 		t.Error("Should have error that from id is 0.")
 	}
@@ -24,6 +24,50 @@ func testInsert(t *testing.T) {
 
 	if err := InsertMessage(1, 2, ""); err == nil {
 		t.Error("Should have error that message is empty.")
+	}
+}
+
+func testValidInsert(t *testing.T) {
+	if err := InsertMessage(3, 2, "abc"); err != nil {
+		t.Error(err)
+	}
+
+	if err := InsertMessage(3, 2, "abc"); err != nil {
+		t.Error(err)
+	}
+
+	if err := InsertMessage(3, 1, "abc"); err != nil {
+		t.Error(err)
+	}
+}
+
+func testGetSentMessages(t *testing.T) {
+	if result, err := GetSentMessages(3, 0); err != nil {
+		t.Error(err)
+	} else {
+		if len(result) != 3 {
+			t.Error("result not correct.")
+		}
+	}
+}
+
+func testGetReceivedMessages(t *testing.T) {
+	if result, err := GetReveivedMessages(2, 0); err != nil {
+		t.Error(err)
+	} else {
+		if len(result) != 2 {
+			t.Error("result not correct.")
+		}
+	}
+}
+
+func testGetPeerChat(t *testing.T) {
+	if result, err := GetPeerChat(3, 1, 0); err != nil {
+		t.Error(err)
+	} else {
+		if len(result) != 1 {
+			t.Error("result not correct.")
+		}
 	}
 }
 
@@ -57,14 +101,15 @@ func TestMain(t *testing.T) {
 
 	// test the db methods.
 	// insert some data.
-	insertSomeMessages(t)
-
-	testGetMessageFrom(t)
-	testGetMessageTo(t)
-	testGetMessageFromTo(t)
-
-	truncate(t)
+	testDBMethods(t)
 
 	// test the public methods
-	testInsert(t)
+	testValidInsert(t)
+	testGetSentMessages(t)
+	testGetReceivedMessages(t)
+	testGetPeerChat(t)
+
+	if _, err = dbPool.Exec("DROP TABLE private_msg"); err != nil {
+		t.Error(err)
+	}
 }

@@ -20,6 +20,18 @@ func testTableGeneration(t *testing.T) {
 	}
 }
 
+func testDBMethods(t *testing.T) {
+	insertSomeMessages(t)
+
+	testGetMessageFrom(t)
+	testGetPartialMessageFrom(t)
+	testGetMessageTo(t)
+	testGetPartialMessageTo(t)
+	testGetMessageFromTo(t)
+
+	truncate(t)
+}
+
 func insertSomeMessages(t *testing.T) {
 	var err error
 
@@ -36,7 +48,7 @@ func insertSomeMessages(t *testing.T) {
 	}
 
 	var two MessageInfo
-	two.At = 2016
+	two.At = 2018
 	two.FromUser = 2
 	two.ToUser = 3
 	two.Message = "message"
@@ -61,7 +73,7 @@ func insertSomeMessages(t *testing.T) {
 }
 
 func testGetMessageFrom(t *testing.T) {
-	if result, err := getMessagesFrom(2); err != nil {
+	if result, err := getMessagesFrom(2, 0); err != nil {
 		t.Error(err)
 	} else {
 		if len(result) != 3 {
@@ -70,8 +82,18 @@ func testGetMessageFrom(t *testing.T) {
 	}
 }
 
+func testGetPartialMessageFrom(t *testing.T) {
+	if result, err := getMessagesFrom(2, 2017); err != nil {
+		t.Error(err)
+	} else {
+		if len(result) != 1 {
+			t.Error("result not correct.")
+		}
+	}
+}
+
 func testGetMessageTo(t *testing.T) {
-	if result, err := getMessagesTo(3); err != nil {
+	if result, err := getMessagesTo(3, 0); err != nil {
 		t.Error(err)
 	} else {
 		if len(result) != 2 {
@@ -80,8 +102,18 @@ func testGetMessageTo(t *testing.T) {
 	}
 }
 
+func testGetPartialMessageTo(t *testing.T) {
+	if result, err := getMessagesTo(3, 2017); err != nil {
+		t.Error(err)
+	} else {
+		if len(result) != 1 {
+			t.Error("result not correct.")
+		}
+	}
+}
+
 func testGetMessageFromTo(t *testing.T) {
-	if result, err := getMessagesFromTo(2, 4); err != nil {
+	if result, err := getMessagesFromTo(2, 4, 0); err != nil {
 		t.Error(err)
 	} else {
 		if len(result) != 1 {

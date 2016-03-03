@@ -18,7 +18,8 @@ func prepareDB() error {
     message text,
     at integer);
     CREATE INDEX IF NOT EXISTS index_private_msg_to_userid ON private_msg (to_userid);
-    CREATE INDEX IF NOT EXISTS index_private_msg_from_userid ON private_msg (from_userid);`
+    CREATE INDEX IF NOT EXISTS index_private_msg_from_userid ON private_msg (from_userid);
+    CREATE INDEX IF NOT EXISTS index_private_msg_at ON private_msg (at);`
 
 	_, err := dbPool.Exec(s)
 	return err
@@ -31,8 +32,10 @@ func insertMessage(info *MessageInfo) error {
 }
 
 // getMessagesFromUser to get the messages sent by the user with fromid.
-func getMessagesFrom(fromid int32) ([]MessageInfo, error) {
-	rows, _ := dbPool.Query("select id,to_userid,message,at from private_msg where from_userid=$1", fromid)
+// utime the unixtime, the messages will be got after that time.
+func getMessagesFrom(fromid, utime int32) ([]MessageInfo, error) {
+	s := "select id,to_userid,message,at from private_msg where from_userid=$1 and at>=$2"
+	rows, _ := dbPool.Query(s, fromid, utime)
 
 	var result []MessageInfo
 	for rows.Next() {
@@ -49,8 +52,10 @@ func getMessagesFrom(fromid int32) ([]MessageInfo, error) {
 }
 
 // getMessagesToUser to get the messages received by the user with toid.
-func getMessagesTo(toid int32) ([]MessageInfo, error) {
-	rows, _ := dbPool.Query("select id,from_userid,message,at from private_msg where to_userid=$1", toid)
+// utime the unixtime, the messages will be got after that time.
+func getMessagesTo(toid, utime int32) ([]MessageInfo, error) {
+	s := "select id,from_userid,message,at from private_msg where to_userid=$1 and at>=$2"
+	rows, _ := dbPool.Query(s, toid, utime)
 
 	var result []MessageInfo
 	for rows.Next() {
@@ -66,8 +71,11 @@ func getMessagesTo(toid int32) ([]MessageInfo, error) {
 	return result, rows.Err()
 }
 
-func getMessagesFromTo(fromid, toid int32) ([]MessageInfo, error) {
-	rows, _ := dbPool.Query("select id,message,at from private_msg where to_userid=$1 and from_userid=$2", toid, fromid)
+// getMessagesFromTo to get messages with a single user.
+// utime the unixtime, the messages will be got after that time.
+func getMessagesFromTo(fromid, toid, utime int32) ([]MessageInfo, error) {
+	s := "select id,message,at from private_msg where to_userid=$1 and from_userid=$2 and at>=$3"
+	rows, _ := dbPool.Query(s, toid, fromid, utime)
 
 	var result []MessageInfo
 	for rows.Next() {

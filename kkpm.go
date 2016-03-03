@@ -48,3 +48,21 @@ func InsertMessage(fromid, toid int32, message string) error {
 
 	return insertMessage(&msg)
 }
+
+// GetSentMessages to get all messages sent.
+// utime the unixtime, the messages will be got after that time.
+func GetSentMessages(userid, utime int32) ([]MessageInfo, error) {
+	return getMessagesFrom(userid, utime)
+}
+
+// GetReveivedMessages to get all received messages.
+// utime the unixtime, the messages will be got after that time.
+func GetReveivedMessages(userid, utime int32) ([]MessageInfo, error) {
+	return getMessagesTo(userid, utime)
+}
+
+// GetPeerChat to get the messages between two users.
+// utime the unixtime, the messages will be got after that time.
+func GetPeerChat(fromid, toid, utime int32) ([]MessageInfo, error) {
+	return getMessagesFromTo(fromid, toid, utime)
+}
