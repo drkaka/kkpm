@@ -13,8 +13,8 @@ import (
 type MessageInfo struct {
 	MessageID string `json:"messageid"`
 	Message   string `json:"message"`
-	FromUser  int32  `json:"fromuser,omitempty"`
-	ToUser    int32  `json:"touser,omitempty"`
+	FromUser  int32  `json:"fromuser"`
+	ToUser    int32  `json:"touser"`
 	At        int32  `json:"at"`
 }
 

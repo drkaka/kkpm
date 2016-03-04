@@ -22,7 +22,7 @@ func TestInvalidInsert(t *testing.T) {
 		t.Error("Should have error that to ids are the same.")
 	}
 
-	if err := InsertMessage(1, 2, ""); err == nil {
+	if err := InsertMessage(1, 2, "   "); err == nil {
 		t.Error("Should have error that message is empty.")
 	}
 }

@@ -21,15 +21,33 @@ func testTableGeneration(t *testing.T) {
 }
 
 func testDBMethods(t *testing.T) {
+	insertInvalidMessage(t)
 	insertSomeMessages(t)
 
 	testGetMessageFrom(t)
 	testGetPartialMessageFrom(t)
+	testGetNoneMessageFrom(t)
 	testGetMessageTo(t)
 	testGetPartialMessageTo(t)
+	testGetNoneMessageTo(t)
 	testGetMessageFromTo(t)
+	testGetNoneMessageFromTo(t)
 
 	truncate(t)
+}
+
+func insertInvalidMessage(t *testing.T) {
+	var one MessageInfo
+	one.At = 2016
+	one.FromUser = 2
+	one.ToUser = 3
+	one.MessageID = "abc"
+	one.Message = "message"
+	messages = append(messages, one)
+
+	if err := insertMessage(&one); err == nil {
+		t.Error("Should have err that messageid is invalid.")
+	}
 }
 
 func insertSomeMessages(t *testing.T) {
@@ -92,6 +110,16 @@ func testGetPartialMessageFrom(t *testing.T) {
 	}
 }
 
+func testGetNoneMessageFrom(t *testing.T) {
+	if result, err := getMessagesFrom(5, 0); err != nil {
+		t.Error(err)
+	} else {
+		if len(result) != 0 {
+			t.Error("result not correct.")
+		}
+	}
+}
+
 func testGetMessageTo(t *testing.T) {
 	if result, err := getMessagesTo(3, 0); err != nil {
 		t.Error(err)
@@ -112,11 +140,31 @@ func testGetPartialMessageTo(t *testing.T) {
 	}
 }
 
+func testGetNoneMessageTo(t *testing.T) {
+	if result, err := getMessagesTo(5, 0); err != nil {
+		t.Error(err)
+	} else {
+		if len(result) != 0 {
+			t.Error("result not correct.")
+		}
+	}
+}
+
 func testGetMessageFromTo(t *testing.T) {
 	if result, err := getMessagesFromTo(2, 4, 0); err != nil {
 		t.Error(err)
 	} else {
 		if len(result) != 1 {
+			t.Error("result not correct.")
+		}
+	}
+}
+
+func testGetNoneMessageFromTo(t *testing.T) {
+	if result, err := getMessagesFromTo(5, 5, 0); err != nil {
+		t.Error(err)
+	} else {
+		if len(result) != 0 {
 			t.Error("result not correct.")
 		}
 	}
