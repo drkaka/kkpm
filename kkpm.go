@@ -26,12 +26,6 @@ func Use(pool *pgx.ConnPool) error {
 
 // InsertMessage to send a message.
 func InsertMessage(fromid, toid int32, message string) error {
-	var msg MessageInfo
-
-	if fromid <= 0 || toid <= 0 {
-		return errors.New("id must larger than 0")
-	}
-
 	if fromid == toid {
 		return errors.New("Can't send message to self.")
 	}
@@ -40,6 +34,7 @@ func InsertMessage(fromid, toid int32, message string) error {
 		return errors.New("message can't be empty")
 	}
 
+	var msg MessageInfo
 	msg.MessageID = uuid.NewV1().String()
 	msg.At = int32(time.Now().Unix())
 	msg.FromUser = fromid

@@ -10,14 +10,6 @@ import (
 )
 
 func TestInvalidInsert(t *testing.T) {
-	if err := InsertMessage(0, 1, "abc"); err == nil {
-		t.Error("Should have error that from id is 0.")
-	}
-
-	if err := InsertMessage(1, 0, "abc"); err == nil {
-		t.Error("Should have error that to id is 0.")
-	}
-
 	if err := InsertMessage(1, 1, "abc"); err == nil {
 		t.Error("Should have error that to ids are the same.")
 	}
