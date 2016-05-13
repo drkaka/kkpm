@@ -33,6 +33,24 @@ func testValidInsert(t *testing.T) {
 	}
 }
 
+func testPubReadFunctions(t *testing.T) {
+	if count, err := GetUnreadCount(2); err != nil {
+		t.Error(err)
+	} else if count != 2 {
+		t.Error("Count is wrong.")
+	}
+
+	if err := ReadFrom(2, 3); err != nil {
+		t.Error(err)
+	}
+
+	if count, err := GetUnreadCount(2); err != nil {
+		t.Error(err)
+	} else if count != 0 {
+		t.Error("Count is wrong.")
+	}
+}
+
 func testGetSentMessages(t *testing.T) {
 	if result, err := GetSentMessages(3, 0); err != nil {
 		t.Error(err)
@@ -97,6 +115,7 @@ func TestMain(t *testing.T) {
 
 	// test the public methods
 	testValidInsert(t)
+	testPubReadFunctions(t)
 	testGetSentMessages(t)
 	testGetReceivedMessages(t)
 	testGetPeerChat(t)

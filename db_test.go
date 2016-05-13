@@ -24,6 +24,7 @@ func testDBMethods(t *testing.T) {
 	insertInvalidMessage(t)
 	insertSomeMessages(t)
 
+	testReadFunctions(t)
 	testGetMessageFrom(t)
 	testGetPartialMessageFrom(t)
 	testGetNoneMessageFrom(t)
@@ -87,6 +88,26 @@ func insertSomeMessages(t *testing.T) {
 
 	if err = insertMessage(&three); err != nil {
 		t.Error(err)
+	}
+}
+
+func testReadFunctions(t *testing.T) {
+	count, err := getUnreadCount(3)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if count != 2 {
+		t.Error("Read count is wrong.", " count:", count)
+	}
+
+	if err = readFrom(3, 2); err != nil {
+		t.Fatal(err)
+	}
+	if count, err = getUnreadCount(3); err != nil {
+		t.Fatal(err)
+	} else if count != 0 {
+		t.Error("Read count is wrong.", " count:", count)
 	}
 }
 

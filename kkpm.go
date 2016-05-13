@@ -15,6 +15,7 @@ type MessageInfo struct {
 	Message   string `json:"message"`
 	FromUser  int32  `json:"fromuser"`
 	ToUser    int32  `json:"touser"`
+	Read      bool   `json:"read"`
 	At        int32  `json:"at"`
 }
 
@@ -42,6 +43,16 @@ func InsertMessage(fromid, toid int32, message string) error {
 	msg.Message = message
 
 	return insertMessage(&msg)
+}
+
+// GetUnreadCount to get unread count to id.
+func GetUnreadCount(toid int32) (int32, error) {
+	return getUnreadCount(toid)
+}
+
+// ReadFrom to mark all as read form the id.
+func ReadFrom(toid, fromid int32) error {
+	return readFrom(toid, fromid)
 }
 
 // GetSentMessages to get all messages sent.
