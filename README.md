@@ -34,6 +34,16 @@ go get github.com/satori/go.uuid
 err := kkpm.Use(pool)
 ```
 
+####Get the unread messages count:
+```Go
+count, err := GetUnreadCount(2);
+```
+
+####Mark all messages from the user id as read:
+```Go
+err := ReadFrom(2, 3);
+```
+
 ####Get the messages sent:
 ```Go
 result, err := kkpm.GetSentMessages(3, 0);

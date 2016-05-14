@@ -50,7 +50,7 @@ func GetUnreadCount(toid int32) (int32, error) {
 	return getUnreadCount(toid)
 }
 
-// ReadFrom to mark all as read form the id.
+// ReadFrom to mark all messages from the user id as read.
 func ReadFrom(toid, fromid int32) error {
 	return readFrom(toid, fromid)
 }
