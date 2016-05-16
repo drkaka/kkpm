@@ -44,7 +44,7 @@ func getUnreadCount(toid int32) (int32, error) {
 
 // readFrom to mark all as read form the id.
 func readFrom(toid, fromid int32) error {
-	s := "UPDATE private_msg SET read=true WHERE to_userid=$1 AND from_userid=$2"
+	s := "UPDATE private_msg SET read=true WHERE to_userid=$1 AND from_userid=$2 AND read=false"
 	if _, err := dbPool.Exec(s, toid, fromid); err != nil {
 		return err
 	}
