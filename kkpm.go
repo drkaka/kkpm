@@ -28,7 +28,7 @@ func Use(pool *pgx.ConnPool) error {
 // InsertMessage to send a message.
 func InsertMessage(fromid, toid int32, message string) error {
 	if fromid == toid {
-		return errors.New("Can't send message to self.")
+		return errors.New("can't send message to self")
 	}
 
 	if len(strings.Trim(message, " ")) == 0 {
