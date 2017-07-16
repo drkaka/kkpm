@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS private_msg (
   from_userid integer,
   to_userid integer,
   message text,
+  read boolean,
   at integer
 );
 CREATE INDEX IF NOT EXISTS index_private_msg_to_userid ON private_msg (to_userid);
