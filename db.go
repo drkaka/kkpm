@@ -54,13 +54,13 @@ func readFrom(toid, fromid int32) error {
 // getMessagesFromUser to get the messages sent by the user with fromid.
 // utime the unixtime, the messages will be got after that time.
 func getMessagesFrom(fromid, utime int32) ([]MessageInfo, error) {
-	s := "SELECT id,to_userid,message,at FROM private_msg WHERE from_userid=$1 AND at>$2"
+	s := "SELECT id,to_userid,message,read,at FROM private_msg WHERE from_userid=$1 AND at>$2"
 	rows, _ := dbPool.Query(s, fromid, utime)
 
 	var result []MessageInfo
 	for rows.Next() {
 		var one MessageInfo
-		err := rows.Scan(&(one.MessageID), &(one.ToUser), &(one.Message), &(one.At))
+		err := rows.Scan(&(one.MessageID), &(one.ToUser), &(one.Message), &(one.Read), &(one.At))
 		if err != nil {
 			return result, err
 		}
@@ -74,13 +74,13 @@ func getMessagesFrom(fromid, utime int32) ([]MessageInfo, error) {
 // getMessagesToUser to get the messages received by the user with toid.
 // utime the unixtime, the messages will be got after that time.
 func getMessagesTo(toid, utime int32) ([]MessageInfo, error) {
-	s := "SELECT id,from_userid,message,at FROM private_msg WHERE to_userid=$1 AND at>$2"
+	s := "SELECT id,from_userid,message,read,at FROM private_msg WHERE to_userid=$1 AND at>$2"
 	rows, _ := dbPool.Query(s, toid, utime)
 
 	var result []MessageInfo
 	for rows.Next() {
 		var one MessageInfo
-		err := rows.Scan(&(one.MessageID), &(one.FromUser), &(one.Message), &(one.At))
+		err := rows.Scan(&(one.MessageID), &(one.FromUser), &(one.Message), &(one.Read), &(one.At))
 		if err != nil {
 			return result, err
 		}
@@ -94,13 +94,13 @@ func getMessagesTo(toid, utime int32) ([]MessageInfo, error) {
 // getMessagesFromTo to get messages with a single user.
 // utime the unixtime, the messages will be got after that time.
 func getMessagesFromTo(fromid, toid, utime int32) ([]MessageInfo, error) {
-	s := "SELECT id,message,at FROM private_msg WHERE to_userid=$1 AND from_userid=$2 AND at>$3"
+	s := "SELECT id,message,read,at FROM private_msg WHERE to_userid=$1 AND from_userid=$2 AND at>$3"
 	rows, _ := dbPool.Query(s, toid, fromid, utime)
 
 	var result []MessageInfo
 	for rows.Next() {
 		var one MessageInfo
-		err := rows.Scan(&(one.MessageID), &(one.Message), &(one.At))
+		err := rows.Scan(&(one.MessageID), &(one.Message), &(one.Read), &(one.At))
 		if err != nil {
 			return result, err
 		}
